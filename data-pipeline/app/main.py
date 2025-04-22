@@ -7,9 +7,7 @@ app = FastAPI()
 class IrisData(BaseModel):
     sepal_length: float
     sepal_width: float
-    petal_length: float
-    petal_width: float
-    species: str
+
 
 conn = psycopg2.connect(
     dbname="irisdb",
@@ -23,14 +21,11 @@ conn = psycopg2.connect(
 def insert_data(data: IrisData):
     with conn.cursor() as cur:
         cur.execute("""
-            INSERT INTO iris_data (sepal_length, sepal_width, petal_length, petal_width, species)
+            INSERT INTO iris_data (sepal_length, sepal_width )
             VALUES (%s, %s, %s, %s, %s)
         """, (
             data.sepal_length,
             data.sepal_width,
-            data.petal_length,
-            data.petal_width,
-            data.species
         ))
         conn.commit()
     return {"message": "Data inserted"}

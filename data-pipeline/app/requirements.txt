@@ -1,3 +1,4 @@
 fastapi
 uvicorn
-psycopg2
+psycopg2-binary  # Si tu utilises PostgreSQL
+pandas  # Par exemple, si tu fais du traitement de données
