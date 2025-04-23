@@ -2,8 +2,18 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import psycopg2
 import joblib  # ✅ on utilise joblib maintenant
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Ajouter CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permet toutes les origines, tu peux restreindre cela plus tard
+    allow_credentials=True,
+    allow_methods=["*"],  # Permet toutes les méthodes (GET, POST, etc.)
+    allow_headers=["*"],  # Permet tous les headers
+)
 
 class IrisData(BaseModel):
     sepal_length: float
@@ -21,7 +31,7 @@ conn = psycopg2.connect(
     port="5432"
 )
 
-# ✅ Chargement du modèle local avec joblib
+# Chargement du modèle local avec joblib
 model = joblib.load("iris_model.pkl")
 
 @app.post("/insert")
