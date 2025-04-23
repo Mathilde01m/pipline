@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: irisuser
+      POSTGRES_PASSWORD: irispass
+      POSTGRES_DB: irisdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  api:
+    build: ./app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  train:
+    build: ./train
+    depends_on:
+      - db
+      - mlflow
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.10.0
+    ports:
+      - "5000:5000"
+    command: mlflow server --backend-store-uri sqlite:///mlflow.db --host 0.0.0.0
+    volumes:
+      - mlflow_artifacts:/mlflow
+
+volumes:
+  pgdata:
+  mlflow_artifacts:
+
