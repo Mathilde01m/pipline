@@ -1,9 +1,18 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+import joblib
 import psycopg2
-import joblib  # ✅ on utilise joblib maintenant
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class IrisData(BaseModel):
     sepal_length: float
@@ -12,7 +21,7 @@ class IrisData(BaseModel):
 class PredictInput(BaseModel):
     sepal_width: float
 
-# Connexion à PostgreSQL
+# Connexion PostgreSQL
 conn = psycopg2.connect(
     dbname="irisdb",
     user="irisuser",
@@ -21,8 +30,14 @@ conn = psycopg2.connect(
     port="5432"
 )
 
-# ✅ Chargement du modèle local avec joblib
-model = joblib.load("iris_model.pkl")
+try:
+    model = joblib.load("iris_model.pkl")
+except Exception as e:
+    raise RuntimeError(f"Erreur de chargement du modèle : {e}")
+
+@app.get("/")
+def root():
+    return {"status": "API up and running"}
 
 @app.post("/insert")
 def insert_data(data: IrisData):

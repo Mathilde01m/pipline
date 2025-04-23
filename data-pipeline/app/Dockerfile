@@ -1,15 +1,15 @@
-FROM python:3.10
+FROM python:3.11-slim
 
+# Dépendances système minimales
+RUN apt-get update && apt-get install -y gcc libpq-dev
+
+# Installer les dépendances Python
 WORKDIR /app
-
-# Copier uniquement requirements.txt pour installer les dépendances
+COPY main.py .
+COPY iris_model.pkl .
 COPY requirements.txt .
-
-# Installer les dépendances
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copier le reste des fichiers du projet
-COPY . .
+EXPOSE 8000
 
-# Lancer l'application FastAPI avec Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

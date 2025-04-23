@@ -1,9 +1,26 @@
 import pandas as pd
-import requests
+import psycopg2
 
+# Lecture du CSV
 df = pd.read_csv("iris 1.csv")
-data = df.head(2).to_dict(orient="records")
 
-for row in data:
-    response = requests.post("http://localhost:8000/insert", json=row)
-    print(response.status_code, response.json())
+# Connexion à PostgreSQL
+conn = psycopg2.connect(
+    dbname="irisdb",
+    user="irisuser",
+    password="irispass",
+    host="localhost",
+    port="5432"
+)
+
+# Insertion dans la table iris_data
+with conn:
+    with conn.cursor() as cur:
+        for _, row in df.iterrows():
+            cur.execute("""
+                INSERT INTO iris_data (sepal_length, sepal_width)
+                VALUES (%s, %s)
+            """, (row["sepal_length"], row["sepal_width"]))
+print(f"✅ {len(df)} lignes insérées dans la table iris_data.")
+
+conn.close()

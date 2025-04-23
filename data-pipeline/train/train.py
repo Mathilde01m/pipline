@@ -1,26 +1,33 @@
+from sqlalchemy import create_engine
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
+import mlflow
+import mlflow.sklearn
 import joblib
 
-# Chargement du CSV
-df = pd.read_csv("../iris 1.csv")
+# Connexion PostgreSQL
+engine = create_engine("postgresql+psycopg2://irisuser:irispass@db:5432/irisdb")
+df = pd.read_sql("SELECT sepal_length, sepal_width FROM iris_data", engine)
 
-# Nettoyage des noms de colonnes (important si tu as des espaces ou majuscules)
-df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
 
-# Préparation des données
-X = df[['sepal_width']]
-y = df['sepal_length']
+print("📊 Données chargées :", df.shape[0], "lignes")
 
-# Entraînement
-model = RandomForestRegressor()
+X = df[["sepal_width"]]
+y = df["sepal_length"]
+
+model = RandomForestRegressor(random_state=42)
 model.fit(X, y)
+preds = model.predict(X)
+mse = mean_squared_error(y, preds)
 
-# Évaluation
-mse = mean_squared_error(y, model.predict(X))
-print(f"✅ Modèle entraîné — MSE : {mse:.2f}")
+mlflow.set_tracking_uri("http://mlflow:5000")
+mlflow.set_experiment("iris-regression")
 
-# Sauvegarde du modèle
-joblib.dump(model, "../app/iris_model.pkl")
-print("✅ Modèle sauvegardé dans ../app/iris_model.pkl")
+with mlflow.start_run():
+    mlflow.log_param("model_type", "RandomForestRegressor")
+    mlflow.log_metric("mse", mse)
+    mlflow.sklearn.log_model(model, "model")
+    joblib.dump(model, "iris_model.pkl")
+
+print(f"✅ Modèle entraîné avec MSE={mse:.4f} et sauvegardé dans MLflow + .pkl")
