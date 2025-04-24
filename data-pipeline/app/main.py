@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import joblib
 import psycopg2
-
 from fastapi.middleware.cors import CORSMiddleware
+import mlflow.pyfunc
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
 
 app = FastAPI()
 
@@ -31,10 +34,15 @@ conn = psycopg2.connect(
     port="5432"
 )
 
-try:
-    model = joblib.load("iris_model.pkl")
-except Exception as e:
-    raise RuntimeError(f"Erreur de chargement du modèle : {e}")
+# Chargement du modèle depuis MLflow
+MLFLOW_TRACKING_URI = "http://mlflow:5000"
+EXPERIMENT_NAME = "iris-regression"
+mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+experiment = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
+runs = mlflow.search_runs(experiment_ids=[experiment.experiment_id], order_by=["start_time desc"])
+last_run_id = runs.iloc[0]["run_id"]
+model_uri = f"runs:/{last_run_id}/model"
+model = mlflow.pyfunc.load_model(model_uri)
 
 @app.get("/")
 def root():
@@ -54,3 +62,11 @@ def insert_data(data: IrisData):
 def predict(data: PredictInput):
     prediction = model.predict([[data.sepal_width]])[0]
     return {"sepal_length_predicted": round(prediction, 2)}
+
+# Monter les fichiers statiques
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Route pour servir l'interface utilisateur
+@app.get("/ui")
+def get_ui():
+    return FileResponse(os.path.join("static", "index.html"))
