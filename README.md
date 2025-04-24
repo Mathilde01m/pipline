@@ -26,15 +26,15 @@ git clone <repo>
 cd data-pipeline
 ```
 
-##2. Lancer le pipeline
+## 2. Lancer le pipeline
 
 docker-compose up --build
 
-##3. Insérer les données dans PostgreSQL
+## 3. Insérer les données dans PostgreSQL
 
 python insert.py
 
-##🌐 Interface web
+## 🌐 Interface web
 
 Accessible ici :
 👉 http://localhost:8000/ui
@@ -46,8 +46,8 @@ Cliquez sur Prédire
 La longueur estimée s’affiche automatiquement 🎉
 
 
-##🔁 API FastAPI
-###📥 POST /insert
+## 🔁 API FastAPI
+### 📥 POST /insert
 
 POST http://localhost:8000/insert
 {
@@ -55,18 +55,18 @@ POST http://localhost:8000/insert
   "sepal_width": 3.5
 }
 
-###📊 POST /predict
+### 📊 POST /predict
 
 POST http://localhost:8000/predict
 {
   "sepal_width": 3.5
 }
 
-###🩺 GET /
+### 🩺 GET /
 
 curl http://localhost:8000/
 
-###📈 Suivi des modèles MLflow
+### 📈 Suivi des modèles MLflow
 Interface web MLflow :
 👉 http://localhost:5000
 
@@ -74,7 +74,7 @@ Visualisation des paramètres, métriques et modèles
 Historique des expériences
 Récupération du meilleur modèle automatiquement dans l’API
 
-###🛠 Technologies utilisées
+### 🛠 Technologies utilisées
 
 Python 3.11
 FastAPI & Uvicorn
@@ -84,17 +84,17 @@ MLflow
 Docker & Docker Compose
 HTML/CSS/JS (frontend minimal)
 
-###💡 Idées d'amélioration
+### 💡 Idées d'amélioration
 ⚙️ Scheduler automatique d'entraînement
 📦 Export ONNX du modèle
 📊 Dashboard Streamlit ou Gradio
 🔐 Authentification dans l’interface
 📤 Déploiement sur un VPS ou dans le cloud (Render, Heroku, etc.)
 
-👩‍💻 Auteur
+### 👩‍💻 Auteurs
 Projet développé par Yrieix DE FOUCAULD et Mathilde De Oliveira – Étudiants en Expert(e) en Management des Systèmes d'Information à Epitech Digital School 🎓
 
-📜 Licence
+### 📜 Licence
 Ce projet est open-source. Utilisation libre dans un cadre pédagogique ou personnel.
 
 
