@@ -30,9 +30,12 @@ cd data-pipeline
 
 docker-compose up --build
 
-### 3. Insérer les données dans PostgreSQL
+### Insérer les données dans PostgreSQL
 
 python insert.py
+
+### Lancer l'API
+docker-compose up --build api  
 
 ## 🌐 Interface web
 
