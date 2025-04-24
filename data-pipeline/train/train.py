@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 import pandas as pd
+import psycopg2
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 import mlflow

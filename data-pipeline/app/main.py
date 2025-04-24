@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import psycopg2
+
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
