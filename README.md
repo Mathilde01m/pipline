@@ -1,35 +1,100 @@
-# Data Pipeline Project
+# 🌸 Iris Data Pipeline – Prédiction ML avec FastAPI, MLflow & Docker
 
-Ce projet met en place un pipeline de données avec FastAPI, Docker, PostgreSQL et MLflow. Il permet d'entraîner un modèle de prédiction pour la longueur du sépale d'iris à partir de la largeur du sépale. L'API exposée permet d'insérer des données dans une base PostgreSQL, d'entraîner un modèle et de faire des prédictions via une API REST.
+Ce projet met en place un pipeline de modélisation machine learning complet et **dockerisé**, pour prédire la **longueur du sépale** d’une fleur Iris à partir de sa largeur.
 
-## Prérequis
+Il inclut :
+- 🧠 Un modèle RandomForestRegressor entraîné et suivi avec MLflow
+- 🔁 Une API REST avec FastAPI pour l’insertion et la prédiction
+- 💻 Une interface web simple en HTML/CSS/JS
+- 🐳 Un environnement complet sous Docker
 
-Avant de commencer, assure-toi que tu as les éléments suivants installés :
+---
 
-- Docker et Docker Compose
-- Python 3.x
-- pip (gestionnaire de paquets Python)
+## 📂 Structure du projet
 
-## Structure du projet
+data-pipeline/ ├── app/ │ ├── main.py # API FastAPI │ ├── Dockerfile # Image pour l'API │ ├── requirements.txt │ └── static/ # Interface web │ ├── index.html │ ├── script.js │ └── styles.css ├── train/ │ ├── train.py # Entraînement + MLflow │ └── Dockerfile # Image d'entraînement ├── iris 1.csv # Données brutes ├── insert.py # Script d'insertion de données ├── docker-compose.yml # Orchestration Docker ├── init.sql # Création de la table iris_data
 
-Le projet est divisé en plusieurs services, chacun étant un conteneur Docker :
 
-- **FastAPI (API)** : L'API REST pour insérer des données et effectuer des prédictions.
-- **PostgreSQL** : Base de données pour stocker les données d'iris.
-- **MLflow** : Outil pour la gestion du modèle de machine learning.
-- **Train** : Service pour entraîner le modèle de prédiction sur les données.
+---
 
-### Détails des services :
-
-1. **FastAPI (API)** : Ce service permet de faire des requêtes pour insérer des données dans PostgreSQL et d'effectuer des prédictions avec le modèle d'iris.
-2. **PostgreSQL** : Contient les données d'entraînement pour le modèle.
-3. **MLflow** : Permet de suivre les expériences de machine learning et de gérer les modèles.
-4. **Train** : Service pour entraîner le modèle avec les données d'iris.
-
-## Installation
+## 🚀 Démarrage rapide
 
 ### 1. Cloner le projet
 
 ```bash
-git clone https://github.com/ton-organisation/data-pipeline.git
+git clone <repo>
 cd data-pipeline
+```
+
+##2. Lancer le pipeline
+
+docker-compose up --build
+
+##3. Insérer les données dans PostgreSQL
+
+python insert.py
+
+##🌐 Interface web
+
+Accessible ici :
+👉 http://localhost:8000/ui
+
+Entrez une largeur de sépale
+
+Cliquez sur Prédire
+
+La longueur estimée s’affiche automatiquement 🎉
+
+
+##🔁 API FastAPI
+###📥 POST /insert
+
+POST http://localhost:8000/insert
+{
+  "sepal_length": 5.1,
+  "sepal_width": 3.5
+}
+
+###📊 POST /predict
+
+POST http://localhost:8000/predict
+{
+  "sepal_width": 3.5
+}
+
+###🩺 GET /
+
+curl http://localhost:8000/
+
+###📈 Suivi des modèles MLflow
+Interface web MLflow :
+👉 http://localhost:5000
+
+Visualisation des paramètres, métriques et modèles
+Historique des expériences
+Récupération du meilleur modèle automatiquement dans l’API
+
+###🛠 Technologies utilisées
+
+Python 3.11
+FastAPI & Uvicorn
+scikit-learn (RandomForestRegressor)
+PostgreSQL
+MLflow
+Docker & Docker Compose
+HTML/CSS/JS (frontend minimal)
+
+###💡 Idées d'amélioration
+⚙️ Scheduler automatique d'entraînement
+📦 Export ONNX du modèle
+📊 Dashboard Streamlit ou Gradio
+🔐 Authentification dans l’interface
+📤 Déploiement sur un VPS ou dans le cloud (Render, Heroku, etc.)
+
+👩‍💻 Auteur
+Projet développé par Yrieix DE FOUCAULD et Mathilde De Oliveira – Étudiants en Expert(e) en Management des Systèmes d'Information à Epitech Digital School 🎓
+
+📜 Licence
+Ce projet est open-source. Utilisation libre dans un cadre pédagogique ou personnel.
+
+
