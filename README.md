@@ -35,7 +35,7 @@ docker-compose up --build
 python insert.py
 
 ### Lancer l'API
-docker-compose up --build api  
+docker-compose up --build  
 
 ## 🌐 Interface web
 
